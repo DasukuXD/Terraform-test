@@ -58,3 +58,29 @@ module "storage_account_role_assignment" {
 
   depends_on = [module.managed_identity_storage_account]
 }
+
+module "aks_cluster" {
+  source = "../modules/terraform-azurerm-Aks"
+
+  resource_group_name           = azurerm_resource_group.this.name
+  aks_name                      = var.aks_name
+  subnet_id                     = module.virtual_network.map_subnet_ids["subnet-vm"]
+  user_assigned_identity_id     = [module.managed_identity_storage_account.id]
+  key_vault_id                  = azurerm_key_vault.this.id
+  aks_cluster                   = var.aks_cluster
+  aks_cluster_worker_node_pools = var.aks_cluster_worker_node_pools
+
+  service_mesh_profile = {
+    mode                             = "Istio"
+    internal_ingress_gateway_enabled = true
+    external_ingress_gateway_enabled = true
+    revisions                        = "asm-1-20"
+  }
+
+  workload_autoscaler_profile = {
+    keda_enabled                    = true
+    vertical_pod_autoscaler_enabled = true
+  }
+
+  depends_on = [azurerm_resource_group.this, module.virtual_network, module.managed_identity_storage_account, azurerm_key_vault.this]
+}
