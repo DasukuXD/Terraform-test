@@ -1,24 +1,14 @@
 output "name" {
-  description = "value of the name of the identity."
-  value       = azurerm_user_assigned_identity.this.name
+  value       = azurerm_storage_account.this.name
+  description = "Name of the storage account"
 }
 
 output "id" {
-  description = "value of the id of the identity."
-  value       = azurerm_user_assigned_identity.this.id
+  value       = azurerm_storage_account.this.id
+  description = "ID of the storage account"
 }
 
-output "principal_id" {
-  description = "value of the principal id of the identity."
-  value       = azurerm_user_assigned_identity.this.principal_id
-}
-
-output "client_id" {
-  description = "value of the client id of the identity."
-  value       = azurerm_user_assigned_identity.this.client_id
-}
-
-output "tenant_id" {
-  description = "value of the tenant id of the identity."
-  value       = azurerm_user_assigned_identity.this.tenant_id
+output "primary_connection_string" {
+  value       = azurerm_storage_account.this.primary_connection_string
+  description = "The primary connection string for the storage account"
 }

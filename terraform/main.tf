@@ -14,6 +14,13 @@ module "virtual_network" {
   depends_on = [azurerm_resource_group.this]
 }
 
+module "storage_account" {
+  source = "../modules/terraform-azurerm-StorageAccount"
+
+  st_name             = var.st_name
+  resource_group_name = azurerm_resource_group.this.name
+}
+
 module "private_endpoints" {
   source = "../modules/terraform-azurerm-PrivateEndpoint"
 
@@ -33,10 +40,10 @@ module "private_endpoints" {
       group_ids                      = ["blob"]
       approval_required              = var.approval_required
       approval_message               = "Please approve Private Endpoint connection pe_sa"
-      private_connection_resource_id = azurerm_storage_account.this.id
+      private_connection_resource_id = module.storage_account.id
     }
   }
-  depends_on = [azurerm_resource_group.this, module.virtual_network, azurerm_virtual_machine.this, azurerm_storage_account.this]
+  depends_on = [azurerm_resource_group.this, module.virtual_network, azurerm_virtual_machine.this, module.storage_account]
 }
 
 module "managed_identity_storage_account" {
@@ -51,7 +58,7 @@ module "managed_identity_storage_account" {
 module "storage_account_role_assignment" {
   source = "../modules/terraform-azurerm-RoleAssignment"
 
-  scope                = azurerm_storage_account.this.id
+  scope                = module.storage_account.id
   principal_id         = module.managed_identity_storage_account.principal_id
   role_definition_name = "Storage Blob Data Contributor"
   description          = "Role Assignment to allow blobs to be created in the storage account"
