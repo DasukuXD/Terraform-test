@@ -33,7 +33,6 @@ variable "additional_tags" {
   type        = map(string)
   description = "(Optional) Additional tags for the virtual network."
   default     = null
-
 }
 
 variable "subnets" {
