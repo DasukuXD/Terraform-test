@@ -113,3 +113,40 @@ variable "aks_cluster_worker_node_pools" {
     node_taints          = list(string)
   }))
 }
+
+# =========================================================================
+# -------------------------- Postgres Database ---------------------------
+# =========================================================================
+
+variable "postgres_server_name" {
+  type = string
+}
+
+variable "postgres_zone" {
+  type = string
+}
+
+variable "postgres_admin_login" {
+  type = string
+}
+
+variable "postgres_admin_password" {
+  type = string
+}
+
+variable "postgres_sku_name" {
+  type = string
+}
+
+variable "storage_mb" {
+  type = string
+}
+
+variable "postgres_list" {
+  type = list(object({
+    name        = string
+    collation   = string
+    charset     = string
+    create_role = bool
+  }))
+}

@@ -28,7 +28,7 @@ module "private_endpoints" {
   private_endpoints = {
     pe_vm = {
       name                           = "pe-vm"
-      subnet_id                      = module.virtual_network.map_subnet_ids["subnet-vm"]
+      subnet_id                      = module.virtual_network.map_subnet_ids["subnet-1"]
       group_ids                      = []
       approval_required              = var.approval_required
       approval_message               = "Please approve Private Endpoint connection pe_vm"
@@ -36,7 +36,7 @@ module "private_endpoints" {
     },
     pe_sa = {
       name                           = "pe-sa"
-      subnet_id                      = module.virtual_network.map_subnet_ids["subnet-sa"]
+      subnet_id                      = module.virtual_network.map_subnet_ids["subnet-1"]
       group_ids                      = ["blob"]
       approval_required              = var.approval_required
       approval_message               = "Please approve Private Endpoint connection pe_sa"
@@ -71,7 +71,7 @@ module "aks_cluster" {
 
   resource_group_name           = azurerm_resource_group.this.name
   aks_name                      = var.aks_name
-  subnet_id                     = module.virtual_network.map_subnet_ids["subnet-vm"]
+  subnet_id                     = module.virtual_network.map_subnet_ids["subnet-1"]
   user_assigned_identity_id     = [module.managed_identity_storage_account.id]
   key_vault_id                  = azurerm_key_vault.this.id
   aks_cluster                   = var.aks_cluster
@@ -90,4 +90,18 @@ module "aks_cluster" {
   }
 
   depends_on = [azurerm_resource_group.this, module.virtual_network, module.managed_identity_storage_account, azurerm_key_vault.this]
+}
+
+module "postgres_server" {
+  source = "../modules/terraform-azurerm-PostgresDB"
+
+  resource_group_name     = azurerm_resource_group.this.name
+  postgres_server_name    = var.postgres_server_name
+  subnet_id               = module.virtual_network.map_subnet_ids["subnet-1"]
+  postgres_zone           = var.postgres_zone
+  postgres_admin_login    = var.postgres_admin_login
+  postgres_admin_password = var.postgres_admin_password
+  postgres_sku_name       = var.postgres_sku_name
+  storage_mb              = var.storage_mb
+  postgres_list           = var.postgres_list
 }

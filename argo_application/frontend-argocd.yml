@@ -11,8 +11,10 @@ spec:
     path: "application/frontend"
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: "argocd"
+    namespace: "application"
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
     automated:
       prune: true
       selfHeal: true
