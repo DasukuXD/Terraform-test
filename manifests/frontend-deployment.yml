@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: $aws_account_id.dkr.ecr.$region.amazonaws.com/frontend-image:v1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: FRONTEND_ENV
+              value: "test"
