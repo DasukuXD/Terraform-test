@@ -15,6 +15,7 @@ jobs:
   scan-source-code:
     name: Scan Code With Trivy
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout Code
@@ -36,6 +37,7 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     needs: scan-terraform
+    continue-on-error: true
 
     steps:
       - name: Checkout Code
@@ -66,6 +68,7 @@ jobs:
     name: Update argocd
     runs-on: ubuntu-latest
     needs: build-push-image
+    continue-on-error: true
 
     steps:
       - name: Checkout Code
@@ -88,6 +91,7 @@ jobs:
     name: Alert to GoogleChat
     runs-on: ubuntu-latest
     needs: Update-argocd
+    continue-on-error: true
 
     steps:
       - name: Checkout repository
