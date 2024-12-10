@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: $aws_account_id.dkr.ecr.$region.amazonaws.com/backend-image:v1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: BACKEND_ENV
+              value: "test"
